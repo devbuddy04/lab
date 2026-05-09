@@ -1,0 +1,28 @@
+import requests
+import os
+
+# Take input
+folder = input("Enter folder number: ")
+
+# GitHub repo API URL
+api_url = f"https://api.github.com/repos/devbuddy04/lab/contents/{folder}"
+
+# Create local folder
+os.makedirs(folder, exist_ok=True)
+
+# Get list of files
+response = requests.get(api_url)
+data = response.json()
+
+# Download files
+for file in data:
+    if file["type"] == "file":
+        download_url = file["download_url"]
+        file_path = os.path.join(folder, file["name"])
+        
+        file_data = requests.get(download_url)
+        
+        with open(file_path, "wb") as f:
+            f.write(file_data.content)
+        
+        
